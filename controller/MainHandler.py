@@ -45,12 +45,14 @@ class MainHandler(JWTHandler):
             lstKey = await conn.execute('hkeys', cls.REDIS_KEY_API_GETWAY)
 
             for szKey in lstKey:
-                # szKey = szKey.decode("utf8")
+                szKey = szKey.decode("utf8")
+
                 szVal = await conn.execute('hget', cls.REDIS_KEY_API_GETWAY, szKey)
+                szVal = szVal.decode("utf8")
 
                 if szVal is None:
                     continue
 
-                cls.g_dictAPIGetway[szKey.decode("utf8")] = json.loads(szVal)
+                cls.g_dictAPIGetway[szKey] = json.loads(szVal)
 
         await g_aio_logger.info(obj2json(cls.g_dictAPIGetway))
