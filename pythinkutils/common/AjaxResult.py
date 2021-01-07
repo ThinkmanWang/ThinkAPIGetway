@@ -7,5 +7,9 @@ class AjaxResult:
         self.data = data
 
     @classmethod
-    def error(cls):
-        return AjaxResult(500, "Server Error")
+    def error(cls, data = None):
+        return AjaxResult(500, "Server Error", data=data)
+
+    @classmethod
+    def success(cls, msg):
+        return AjaxResult(msg=msg)
