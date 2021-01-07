@@ -14,6 +14,9 @@ from tornado.routing import RuleRouter, Rule, PathMatches
 from tornado.httpserver import HTTPServer
 from tornado.platform.asyncio import AsyncIOMainLoop
 import asyncio
+from urllib.parse import urlparse
+from aiohttp_requests import requests
+from io import BytesIO
 
 from pythinkutils.common.log import g_logger
 from pythinkutils.aio.jwt.tornado.handler.BaseHandler import BaseHandler
@@ -21,6 +24,13 @@ from pythinkutils.aio.jwt.tornado.handler.JWTHandler import JWTHandler
 from pythinkutils.common.StringUtils import *
 from pythinkutils.common.object2json import obj2json
 from pythinkutils.common.AjaxResult import AjaxResult
+
+from enum import Enum
+class APIGetwayResult(Enum):
+    SUCCESS = 0
+    UNKNOW_PATH = 1
+    AUTH_INVALID = 2
+    PROXY_FAILED = 3
 
 class MainHandler(JWTHandler):
 
@@ -32,14 +42,61 @@ class MainHandler(JWTHandler):
         if False == str(szPath).startswith("/"):
             szPath = "/" + szPath.strip()
 
-        if await self.do_api_getway(szPath):
+        nRet = await self.do_api_getway(szPath)
+
+        if nRet == APIGetwayResult.SUCCESS:
             pass
-        else:
-            # self.set_status(500)
+        elif nRet == APIGetwayResult.UNKNOW_PATH:
             self.write(obj2json(AjaxResult.error("Unknow path '{}' ".format(szPath))))
+        elif nRet == APIGetwayResult.AUTH_INVALID:
+            self.write(obj2json(AjaxResult.error("Auth failed for '{}' ".format(szPath))))
+        elif nRet == APIGetwayResult.PROXY_FAILED:
+            self.write(obj2json(AjaxResult.error("Proxy failed for '{}' ".format(szPath))))
+        else:
+            self.write(obj2json(AjaxResult.error("Unknow Error for '{}' ".format(szPath))))
 
     async def get(self, szPath):
         await self.post(szPath)
+
+    async def do_http_proxy(self, szUrl):
+        from pythinkutils.aio.common.aiolog import g_aio_logger
+
+        try:
+            # url = urlparse(szUrl)
+            dictHeader = self.request.headers
+            byteBody = self.request.body
+
+            if "POST" == self.request.method:
+                if byteBody is None or 0 == len(byteBody):
+                    resp = await requests.post(szUrl, headers=dictHeader)
+                else:
+                    resp = await requests.post(szUrl, headers=dictHeader, data=byteBody)
+            else:
+                resp = await requests.get(szUrl, headers=dictHeader)
+
+            # resp = await requests.request("POST", szUrl, headers=dictHeader, data=byteBody)
+
+            self.set_status(resp.status)
+            for k in dict(resp.headers).keys():
+                if k != "Transfer-Encoding":
+                    self.add_header(k, resp.headers[k])
+
+            async for data in resp.content.iter_any():
+                self.write(data)
+
+            return APIGetwayResult.SUCCESS
+
+        except Exception as e:
+            return APIGetwayResult.PROXY_FAILED
+
+
+    async def auth_valid(self, szKey):
+        dictRule = MainHandler.g_dictAPIGetway[szKey]
+
+        if "auth" not in dictRule.keys() or False == dictRule["auth"]:
+            return True
+
+        return self.token_valid()
 
     async def do_api_getway(self, szPath):
         from pythinkutils.aio.common.aiolog import g_aio_logger
@@ -54,12 +111,17 @@ class MainHandler(JWTHandler):
 
                     await g_aio_logger.info("Goto %s" % (szRealPath))
 
-                    return True
+                    if False == await self.auth_valid(szKey):
+                        return APIGetwayResult.AUTH_INVALID
 
-            return False
+                    return await self.do_http_proxy(szRealPath)
+                else:
+                    continue
+
+            return APIGetwayResult.UNKNOW_PATH
         except Exception as e:
             await g_aio_logger.error(e)
-            return False
+            return APIGetwayResult.PROXY_FAILED
 
 
     @classmethod
