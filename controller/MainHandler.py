@@ -44,18 +44,22 @@ class MainHandler(JWTHandler):
     async def do_api_getway(self, szPath):
         from pythinkutils.aio.common.aiolog import g_aio_logger
 
-        for szKey in MainHandler.g_listAPIGetwayKey:
-            if szPath.startswith(szKey):
-                # _szPath = szPath
-                szRealPath = "{}{}".format(MainHandler.g_dictAPIGetway[szKey]["proxy_pass"], szPath.replace(szKey, ""))
-                if "/" == szKey:
-                    szRealPath = "{}{}".format(MainHandler.g_dictAPIGetway[szKey]["proxy_pass"], szPath[1:])
+        try:
+            for szKey in MainHandler.g_listAPIGetwayKey:
+                if szPath.startswith(szKey):
+                    # _szPath = szPath
+                    szRealPath = "{}{}".format(MainHandler.g_dictAPIGetway[szKey]["proxy_pass"], szPath.replace(szKey, ""))
+                    if "/" == szKey:
+                        szRealPath = "{}{}".format(MainHandler.g_dictAPIGetway[szKey]["proxy_pass"], szPath[1:])
 
-                await g_aio_logger.info("Goto %s" % (szRealPath))
+                    await g_aio_logger.info("Goto %s" % (szRealPath))
 
-                return True
+                    return True
 
-        return False
+            return False
+        except Exception as e:
+            await g_aio_logger.error(e)
+            return False
 
 
     @classmethod
