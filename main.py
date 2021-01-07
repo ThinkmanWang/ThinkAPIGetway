@@ -36,7 +36,7 @@ if __name__ == '__main__':
 
     http_server = HTTPServer(application)
 
-    http_server.bind(8080)
+    http_server.bind(80)
     http_server.start(0)
     # http_server.listen(8080)
 
