@@ -25,6 +25,7 @@ from controller.AuthHandler import AuthHandler
 
 async def on_server_started():
     g_logger.info("Server Started!!!")
+    await MainHandler.init_api_getway()
 
 application = tornado.web.Application(handlers = [
     (r"/auth/(.*)", AuthHandler)
