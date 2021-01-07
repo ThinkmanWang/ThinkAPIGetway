@@ -25,21 +25,46 @@ from pythinkutils.common.AjaxResult import AjaxResult
 class MainHandler(JWTHandler):
 
     g_dictAPIGetway = {}
+    g_listAPIGetwayKey = []
     REDIS_KEY_API_GETWAY = "think_api_getway"
 
     async def post(self, szPath):
         if False == str(szPath).startswith("/"):
             szPath = "/" + szPath.strip()
 
-        self.write("{}".format(szPath))
+        if await self.do_api_getway(szPath):
+            pass
+        else:
+            # self.set_status(500)
+            self.write(obj2json(AjaxResult.error("Unknow path '{}' ".format(szPath))))
 
     async def get(self, szPath):
         await self.post(szPath)
+
+    async def do_api_getway(self, szPath):
+        from pythinkutils.aio.common.aiolog import g_aio_logger
+
+        for szKey in MainHandler.g_listAPIGetwayKey:
+            if szPath.startswith(szKey):
+                # _szPath = szPath
+                szRealPath = "{}{}".format(MainHandler.g_dictAPIGetway[szKey]["proxy_pass"], szPath.replace(szKey, ""))
+                if "/" == szKey:
+                    szRealPath = "{}{}".format(MainHandler.g_dictAPIGetway[szKey]["proxy_pass"], szPath[1:])
+
+                await g_aio_logger.info("Goto %s" % (szRealPath))
+
+                return True
+
+        return False
+
 
     @classmethod
     async def init_api_getway(cls):
         from pythinkutils.aio.common.aiolog import g_aio_logger
         from pythinkutils.aio.redis.ThinkAioRedisPool import ThinkAioRedisPool
+
+        def key_cmp(szKey):
+            return len(szKey)
 
         with await (await ThinkAioRedisPool.get_conn_pool_ex()) as conn:
             lstKey = await conn.execute('hkeys', cls.REDIS_KEY_API_GETWAY)
@@ -56,3 +81,8 @@ class MainHandler(JWTHandler):
                 cls.g_dictAPIGetway[szKey] = json.loads(szVal)
 
         await g_aio_logger.info(obj2json(cls.g_dictAPIGetway))
+
+        for szKey in cls.g_dictAPIGetway.keys():
+            cls.g_listAPIGetwayKey.append(szKey)
+
+        cls.g_listAPIGetwayKey.sort(key=key_cmp, reverse=True)
