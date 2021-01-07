@@ -17,6 +17,9 @@ g_dictAPIGetway = {
     , "/ruoyi-api/": {
         "proxy_pass": "http://172.16.0.2:8000/"
     }
+    , "/prod-api/": {
+        "proxy_pass": "http://172.16.0.2:8000/"
+    }
 }
 
 def init_api_getway():
