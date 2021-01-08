@@ -62,8 +62,12 @@ class MainHandler(JWTHandler):
         from pythinkutils.aio.common.aiolog import g_aio_logger
 
         try:
-            # url = urlparse(szUrl)
+            url = urlparse(szUrl)
+
             dictHeader = self.request.headers
+            # dictHeader["Host"] = "{}://{}".format(url.scheme, url.netloc)
+            dictHeader["Host"] = url.netloc
+
             byteBody = self.request.body
 
             if "POST" == self.request.method:
