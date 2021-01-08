@@ -77,12 +77,23 @@ class MainHandler(JWTHandler):
             # resp = await requests.request("POST", szUrl, headers=dictHeader, data=byteBody)
 
             self.set_status(resp.status)
+
+            dictRespHeader = {}
             for k in dict(resp.headers).keys():
-                if k != "Transfer-Encoding":
-                    self.add_header(k, resp.headers[k])
+                if k == "Transfer-Encoding" and 'chunked' == resp.headers[k]:
+                    continue
+
+                if k in dictRespHeader.keys():
+                    dictRespHeader[k] = "{};{}".format(dictRespHeader[k], resp.headers[k])
+                else:
+                    dictRespHeader[k] = resp.headers[k]
+
+            for k in dictRespHeader.keys():
+                self.add_header(k, dictRespHeader[k])
 
             async for data in resp.content.iter_any():
                 self.write(data)
+                await self.flush()
 
             return APIGetwayResult.SUCCESS
 
