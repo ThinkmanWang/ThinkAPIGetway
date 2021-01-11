@@ -17,6 +17,9 @@ import asyncio
 from urllib.parse import urlparse
 from aiohttp_requests import requests
 from io import BytesIO
+import tornado.curl_httpclient
+import tornado.httpclient
+import pycurl
 
 from pythinkutils.common.log import g_logger
 from pythinkutils.aio.jwt.tornado.handler.BaseHandler import BaseHandler
@@ -57,6 +60,60 @@ class MainHandler(JWTHandler):
 
     async def get(self, szPath):
         await self.post(szPath)
+
+    async def do_http_proxy_plus(self, szUrl):
+        from pythinkutils.aio.common.aiolog import g_aio_logger
+
+        try:
+            dictHeader = self.request.headers
+            url = urlparse(szUrl)
+            # dictHeader["Host"] = url.netloc
+            byteBody = self.request.body
+
+            if "GET" == self.request.method or len(byteBody) <= 0:
+                byteBody = None
+
+            http_client = tornado.curl_httpclient.CurlAsyncHTTPClient()
+            http_request = tornado.httpclient.HTTPRequest(
+                szUrl
+                , method=self.request.method
+                , body=byteBody
+                , headers=dictHeader
+                , follow_redirects=True
+                , allow_nonstandard_methods=True
+                , decompress_response=False
+                , request_timeout=60
+            )
+
+            response = await http_client.fetch(http_request)
+            try:
+                if response.error and not isinstance(response.error, tornado.httpclient.HTTPError):
+                    self.set_status(500)
+                    self.write('Internal server error:\n' + str(response.error))
+                    await self.flush()
+                else:
+                    for szKey in response.headers.keys():
+                        if szKey == "Content-Length":
+                            # Transfer-Encoding" and 'chunked
+                            self.set_header("Transfer-Encoding", "chunked")
+                            continue
+
+                        szVal = response.headers.get(szKey)
+                        self.set_header(szKey, szVal)
+
+                    if response.body:
+                        body = response.body
+                        self.write(body)
+                        await self.flush()
+
+            except Exception as e:
+                self.set_status(500)
+                self.write('Internal server error:\n')
+                await self.flush()
+                return APIGetwayResult.PROXY_FAILED
+
+        except Exception as e:
+            return APIGetwayResult.PROXY_FAILED
 
     async def do_http_proxy(self, szUrl):
         from pythinkutils.aio.common.aiolog import g_aio_logger

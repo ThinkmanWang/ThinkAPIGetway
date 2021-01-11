@@ -29,6 +29,7 @@ pyjwt = "*"
 requests = "*"
 aiohttp-requests = "*"
 aiohttp = "*"
+pycurl = "==7.43.0.3"
 
 [dev-packages]
 
