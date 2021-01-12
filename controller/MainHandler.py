@@ -19,7 +19,6 @@ from aiohttp_requests import requests
 from io import BytesIO
 import tornado.curl_httpclient
 import tornado.httpclient
-import pycurl
 import tornado.httputil
 import re
 
