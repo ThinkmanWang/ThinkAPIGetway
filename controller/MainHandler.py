@@ -17,6 +17,11 @@ import asyncio
 from urllib.parse import urlparse
 from aiohttp_requests import requests
 from io import BytesIO
+import tornado.curl_httpclient
+import tornado.httpclient
+import pycurl
+import tornado.httputil
+import re
 
 from pythinkutils.common.log import g_logger
 from pythinkutils.aio.jwt.tornado.handler.BaseHandler import BaseHandler
@@ -37,6 +42,7 @@ class MainHandler(JWTHandler):
     g_dictAPIGetway = {}
     g_listAPIGetwayKey = []
     REDIS_KEY_API_GETWAY = "think_api_getway"
+    set_cookie_re = re.compile(";?\s*(domain|path)\s*=\s*[^,;]+", re.I)
 
     async def post(self, szPath):
         if False == str(szPath).startswith("/"):
@@ -58,36 +64,126 @@ class MainHandler(JWTHandler):
     async def get(self, szPath):
         await self.post(szPath)
 
-    async def do_http_proxy(self, szUrl):
+    async def do_http_proxy_plus(self, szUrl):
         from pythinkutils.aio.common.aiolog import g_aio_logger
 
         try:
-            # url = urlparse(szUrl)
-            dictHeader = self.request.headers
+            # dictHeader = self.request.headers
+            dictHeader = tornado.httputil.HTTPHeaders(self.request.headers)
+            url = urlparse(szUrl)
+            # dictHeader["Host"] = url.netloc
             byteBody = self.request.body
 
-            if "POST" == self.request.method:
-                if byteBody is None or 0 == len(byteBody):
-                    resp = await requests.post(szUrl, headers=dictHeader)
+            if "GET" == self.request.method or len(byteBody) <= 0:
+                byteBody = None
+
+            http_client = tornado.curl_httpclient.CurlAsyncHTTPClient()
+            http_request = tornado.httpclient.HTTPRequest(
+                szUrl
+                , method=self.request.method
+                , body=byteBody
+                , headers=dictHeader
+                , follow_redirects=True
+                , allow_nonstandard_methods=True
+                , decompress_response=False
+                , request_timeout=60
+            )
+
+            response = await http_client.fetch(http_request)
+            try:
+                if response.error and not isinstance(response.error, tornado.httpclient.HTTPError):
+                    self.set_status(500)
+                    self.write('Internal server error:\n' + str(response.error))
+                    await self.flush()
+
+                    return APIGetwayResult.PROXY_FAILED
                 else:
-                    resp = await requests.post(szUrl, headers=dictHeader, data=byteBody)
-            else:
-                resp = await requests.get(szUrl, headers=dictHeader)
+                    if response.headers.get('Transfer-Encoding') == 'chunked':
+                        del response.headers['Transfer-Encoding']
 
-            # resp = await requests.request("POST", szUrl, headers=dictHeader, data=byteBody)
+                    if 'Set-Cookie' in response.headers:
+                        set_cookie = response.headers.get_list('set-cookie')
+                        del response.headers['set-cookie']
 
-            self.set_status(resp.status)
-            for k in dict(resp.headers).keys():
-                if k != "Transfer-Encoding":
-                    self.add_header(k, resp.headers[k])
+                        for each in set_cookie:
+                            response.headers.add('set-cookie', self.set_cookie_re.sub('', each))
+                    else:
+                        pass
 
-            async for data in resp.content.iter_any():
-                self.write(data)
+                    for szKey in response.headers.keys():
+                        # if szKey == "Content-Length":
+                        #     # Transfer-Encoding" and 'chunked
+                        #     self.set_header("Transfer-Encoding", "chunked")
+                        #     continue
 
-            return APIGetwayResult.SUCCESS
+                        szVal = response.headers.get(szKey)
+                        self.set_header(szKey, szVal)
+
+                    if response.body:
+                        body = response.body
+                        self.write(body)
+                        await self.flush()
+
+                    return APIGetwayResult.SUCCESS
+
+            except Exception as e:
+                self.set_status(500)
+                self.write('Internal server error:\n')
+                await self.flush()
+                return APIGetwayResult.PROXY_FAILED
 
         except Exception as e:
             return APIGetwayResult.PROXY_FAILED
+
+    # async def do_http_proxy(self, szUrl):
+    #     from pythinkutils.aio.common.aiolog import g_aio_logger
+    #
+    #     try:
+    #
+    #         # dictHeader = self.request.headers
+    #         dictHeader = tornado.httputil.HTTPHeaders(self.request.headers)
+    #         # dictHeader["Host"] = "{}://{}".format(url.scheme, url.netloc)
+    #
+    #         url = urlparse(szUrl)
+    #         # dictHeader["Host"] = url.netloc
+    #
+    #         byteBody = self.request.body
+    #
+    #         if "POST" == self.request.method:
+    #             if byteBody is None or 0 == len(byteBody):
+    #                 resp = await requests.post(szUrl, headers=dictHeader)
+    #             else:
+    #                 resp = await requests.post(szUrl, headers=dictHeader, data=byteBody)
+    #         else:
+    #             resp = await requests.get(szUrl, headers=dictHeader)
+    #
+    #         # resp = await requests.request("POST", szUrl, headers=dictHeader, data=byteBody)
+    #
+    #         self.set_status(resp.status)
+    #
+    #         dictRespHeader = {}
+    #
+    #
+    #         for k in dict(resp.headers).keys():
+    #             if k == "Transfer-Encoding" and 'chunked' == resp.headers[k]:
+    #                 continue
+    #
+    #             if k in dictRespHeader.keys():
+    #                 dictRespHeader[k] = "{};{}".format(dictRespHeader[k], resp.headers[k])
+    #             else:
+    #                 dictRespHeader[k] = resp.headers[k]
+    #
+    #         for k in dictRespHeader.keys():
+    #             self.add_header(k, dictRespHeader[k])
+    #
+    #         async for data in resp.content.iter_any():
+    #             self.write(data)
+    #             await self.flush()
+    #
+    #         return APIGetwayResult.SUCCESS
+    #
+    #     except Exception as e:
+    #         return APIGetwayResult.PROXY_FAILED
 
 
     async def auth_valid(self, szKey):
@@ -114,7 +210,7 @@ class MainHandler(JWTHandler):
                     if False == await self.auth_valid(szKey):
                         return APIGetwayResult.AUTH_INVALID
 
-                    return await self.do_http_proxy(szRealPath)
+                    return await self.do_http_proxy_plus(szRealPath)
                 else:
                     continue
 

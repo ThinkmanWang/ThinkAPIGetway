@@ -283,11 +283,11 @@
         },
         "faker": {
             "hashes": [
-                "sha256:7b0c4bb678be21a68640007f254259c73d18f7996a3448267716423360519732",
-                "sha256:7e98483fc273ec5cfe1c9efa9b99adaa2de4c6b610fbc62d3767088e4974b0ce"
+                "sha256:bd56ab94b9ae45df3cdb6ef3ca3c2be2617e6a640699deb74394143d220faf04",
+                "sha256:d70983d5e623976e9e8987e9a39e8d55378e66049f393db35ea9a37b3190085f"
             ],
             "index": "pypi",
-            "version": "==5.3.0"
+            "version": "==5.4.0"
         },
         "hiredis": {
             "hashes": [
@@ -500,6 +500,13 @@
             ],
             "version": "==2.20"
         },
+        "pycurl": {
+            "hashes": [
+                "sha256:6f08330c5cf79fa8ef68b9912b9901db7ffd34b63e225dce74db56bb21deda8e"
+            ],
+            "index": "pypi",
+            "version": "==7.43.0.3"
+        },
         "pyjwt": {
             "hashes": [
                 "sha256:5c2ff2eb27d7e342dfc3cafcc16412781f06db2690fbef81922b0172598f085b",
@@ -625,11 +632,11 @@
         },
         "tqdm": {
             "hashes": [
-                "sha256:556c55b081bd9aa746d34125d024b73f0e2a0e62d5927ff0e400e20ee0a03b9a",
-                "sha256:b8b46036fd00176d0870307123ef06bb851096964fa7fc578d789f90ce82c3e4"
+                "sha256:54985cecd51071f3faa2a07a862c24be1426f925353d82b3dde03f7609d63248",
+                "sha256:86ca00c4942c3b3dc7ed31bae44cd2db38ef85ca05a7920f6a6c52ad7fcac904"
             ],
             "index": "pypi",
-            "version": "==4.55.1"
+            "version": "==4.55.2"
         },
         "typing-extensions": {
             "hashes": [
