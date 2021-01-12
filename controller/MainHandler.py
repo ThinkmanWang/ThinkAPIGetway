@@ -60,6 +60,7 @@ class MainHandler(JWTHandler):
         else:
             self.write(obj2json(AjaxResult.error("Unknow Error for '{}' ".format(szPath))))
 
+
     async def get(self, szPath):
         await self.post(szPath)
 
@@ -130,7 +131,11 @@ class MainHandler(JWTHandler):
                 self.write('Internal server error:\n')
                 await self.flush()
                 return APIGetwayResult.PROXY_FAILED
-
+        except tornado.httpclient.HTTPClientError as e:
+            if 304 == e.code:
+                self.set_status(304)
+                await self.flush()
+                return APIGetwayResult.SUCCESS
         except Exception as e:
             return APIGetwayResult.PROXY_FAILED
 
