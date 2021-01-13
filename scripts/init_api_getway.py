@@ -25,7 +25,7 @@ g_dictAPIGetway = {
         ]
     }
     , "/ruoyi-api/": {
-        "auth": True
+        "auth": False
         , "proxy_pass": [
             {
                 "host": "http://172.16.0.2:8000/"
