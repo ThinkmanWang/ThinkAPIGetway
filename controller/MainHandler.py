@@ -10,6 +10,7 @@ import tornado.web
 from tornado import gen
 import aiomysql
 from tornado.routing import RuleRouter, Rule, PathMatches
+import random
 
 from tornado.httpserver import HTTPServer
 from tornado.platform.asyncio import AsyncIOMainLoop
@@ -40,7 +41,7 @@ class MainHandler(JWTHandler):
 
     g_dictAPIGetway = {}
     g_listAPIGetwayKey = []
-    REDIS_KEY_API_GETWAY = "think_api_getway"
+    REDIS_KEY_API_GETWAY = "think_api_getway_v2"
     set_cookie_re = re.compile(";?\s*(domain|path)\s*=\s*[^,;]+", re.I)
 
     async def post(self, szPath):
@@ -198,6 +199,23 @@ class MainHandler(JWTHandler):
 
         return self.token_valid()
 
+    def get_proxy_path(self, szKey):
+        lstProxyPass = MainHandler.g_dictAPIGetway[szKey]["proxy_pass"]
+
+        nSum = 0
+        for dictItem in lstProxyPass:
+            nSum += int(dictItem.get("weight", 1))
+
+        nVal = random.randint(1, nSum)
+        nSum = 0
+        for dictItem in lstProxyPass:
+            nSum += int(dictItem.get("weight", 1))
+            if nVal <= nSum:
+                return dictItem["host"]
+
+        return lstProxyPass[0]["host"]
+
+
     async def do_api_getway(self, szPath):
         from pythinkutils.aio.common.aiolog import g_aio_logger
 
@@ -205,9 +223,9 @@ class MainHandler(JWTHandler):
             for szKey in MainHandler.g_listAPIGetwayKey:
                 if szPath.startswith(szKey):
                     # _szPath = szPath
-                    szRealPath = "{}{}".format(MainHandler.g_dictAPIGetway[szKey]["proxy_pass"], szPath.replace(szKey, ""))
+                    szRealPath = "{}{}".format(self.get_proxy_path(szKey), szPath.replace(szKey, ""))
                     if "/" == szKey:
-                        szRealPath = "{}{}".format(MainHandler.g_dictAPIGetway[szKey]["proxy_pass"], szPath[1:])
+                        szRealPath = "{}{}".format(self.get_proxy_path(szKey), szPath[1:])
 
                     await g_aio_logger.info("Goto %s" % (szRealPath))
 

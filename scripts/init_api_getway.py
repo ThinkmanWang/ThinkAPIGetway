@@ -17,13 +17,33 @@ from pythinkutils.redis.ThinkRedis import ThinkRedis
 
 g_dictAPIGetway = {
     "/": {
-        "proxy_pass": "http://172.16.0.2:8001/"
+        "proxy_pass": [
+            {
+                "host": "http://172.16.0.2:8001/"
+                , "weight": 1 #default 1
+            }
+        ]
     }
     , "/ruoyi-api/": {
-        "proxy_pass": "http://172.16.0.2:8000/"
+        "auth": False
+        , "proxy_pass": [
+            {
+                "host": "http://172.16.0.2:8000/"
+                # , "weight": 1 #default 1
+            }
+            , {
+                "host": "http://172.16.0.2:8000/"
+                , "weight": 5 #default 1
+            }
+        ]
     }
     , "/prod-api/": {
-        "proxy_pass": "http://172.16.0.2:8000/"
+        "proxy_pass": [
+            {
+                "host": "http://172.16.0.2:8000/"
+                , "weight": 1 #default 1
+            }
+        ]
     }
 }
 
@@ -31,7 +51,7 @@ def init_api_getway():
     r = redis.StrictRedis(connection_pool=ThinkRedis.get_conn_pool_ex())
 
     for szKey in g_dictAPIGetway.keys():
-        r.hset("think_api_getway", szKey, json.dumps(g_dictAPIGetway[szKey]))
+        r.hset("think_api_getway_v2", szKey, json.dumps(g_dictAPIGetway[szKey]))
 
 def main():
     g_logger.info("init api getway")
