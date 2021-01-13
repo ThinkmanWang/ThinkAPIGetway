@@ -71,6 +71,10 @@ class MainHandler(JWTHandler):
         try:
             # dictHeader = self.request.headers
             dictHeader = tornado.httputil.HTTPHeaders(self.request.headers)
+
+            # if "X-Forwarded-For" in dictHeader:
+            dictHeader["X-Forwarded-For"] = "{}, {}".format(dictHeader.get("X-Forwarded-For", ""), self.get_client_ip())
+
             url = urlparse(szUrl)
             # dictHeader["Host"] = url.netloc
             byteBody = self.request.body
