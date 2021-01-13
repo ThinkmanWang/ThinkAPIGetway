@@ -7,6 +7,7 @@ import tornado.ioloop
 import tornado.options
 import tornado.web
 import tornado.httpclient
+import aiocron
 
 from tornado import gen
 import aiomysql
@@ -25,12 +26,20 @@ from pythinkutils.common.AjaxResult import AjaxResult
 from controller.MainHandler import MainHandler
 from controller.AuthHandler import AuthHandler
 
+# @aiocron.crontab("*/1 * * * *")
+async def sync_apigetway():
+    await MainHandler.init_api_getway()
+
 async def on_server_started():
     g_logger.info("Server Started!!!")
     tornado.httpclient.AsyncHTTPClient.configure(None, max_clients=10240)
-    tornado.httpclient.AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
+    # tornado.httpclient.AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
 
     await MainHandler.init_api_getway()
+
+    #crontab
+    aiocron.crontab("*/1 * * * *", func=sync_apigetway)
+
 
 application = tornado.web.Application(handlers = [
     (r"/auth/(.*)", AuthHandler)
