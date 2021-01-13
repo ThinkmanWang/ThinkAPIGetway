@@ -18,6 +18,11 @@ class BaseHandler(tornado.web.RequestHandler):
     def __init__(self, application, request, **kwargs):
         super().__init__(application, request, **kwargs)
 
+    async def prepare(self):
+        from pythinkutils.aio.common.aiolog import g_aio_logger
+
+        await g_aio_logger.info("FROM %s %s %s" % (self.get_client_ip(), self.request.method, self.request.uri ))
+
     def get_client_ip(self):
         try:
             szIP = self.request.headers.get("X-Forwarded-For")
