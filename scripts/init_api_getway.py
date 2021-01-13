@@ -34,7 +34,9 @@ def init_api_getway():
         r.hset("think_api_getway", szKey, json.dumps(g_dictAPIGetway[szKey]))
 
 def main():
+    g_logger.info("init api getway")
     init_api_getway()
+    g_logger.info("Finish init api getway")
 
 if __name__ == '__main__':
     main()
