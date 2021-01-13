@@ -32,7 +32,8 @@ async def sync_apigetway():
 
 async def on_server_started():
     g_logger.info("Server Started!!!")
-    tornado.httpclient.AsyncHTTPClient.configure(None, max_clients=102400)
+    # tornado.httpclient.AsyncHTTPClient.configure(None, max_clients=102400)
+    tornado.httpclient.AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient", max_clients=102400)
     # tornado.httpclient.AsyncHTTPClient.configure("tornado.curl_httpclient.CurlAsyncHTTPClient")
 
     await MainHandler.init_api_getway()
