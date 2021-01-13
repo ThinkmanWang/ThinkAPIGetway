@@ -197,7 +197,7 @@ class MainHandler(JWTHandler):
         if "auth" not in dictRule.keys() or False == dictRule["auth"]:
             return True
 
-        return self.token_valid()
+        return await self.token_valid()
 
     def get_proxy_path(self, szKey):
         lstProxyPass = MainHandler.g_dictAPIGetway[szKey]["proxy_pass"]
