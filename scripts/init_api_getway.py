@@ -17,7 +17,8 @@ from pythinkutils.redis.ThinkRedis import ThinkRedis
 
 g_dictAPIGetway = {
     "/": {
-        "proxy_pass": [
+        "auth": False
+        , "proxy_pass": [
             {
                 "host": "http://172.16.0.2:8001/"
                 , "weight": 1 #default 1
