@@ -25,6 +25,7 @@ from pythinkutils.common.object2json import obj2json
 from pythinkutils.common.AjaxResult import AjaxResult
 from controller.MainHandler import MainHandler
 from controller.AuthHandler import AuthHandler
+from controller.IPHandler import IPHandler
 
 # @aiocron.crontab("*/1 * * * *")
 async def sync_apigetway():
@@ -44,6 +45,7 @@ async def on_server_started():
 
 application = tornado.web.Application(handlers = [
     (r"/auth/(.*)", AuthHandler)
+    , (r"/myip", IPHandler)
     , (r"/(.*)", MainHandler)
 ], cookie_secret="BUEa2ckrQtmBofim3aP6cwr/acg0LEu6mHUxq4O3EY0=", autoreload=False)
 
