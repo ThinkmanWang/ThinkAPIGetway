@@ -14,16 +14,30 @@ import user_agents
 from pythinkutils.common.StringUtils import *
 from pythinkutils.common.log import g_logger
 from pythinkutils.common.object2json import *
+from pythinkutils.common.AjaxResult import AjaxResult
 
 class BaseHandler(tornado.web.RequestHandler):
+
+    MAX_CLIENT_COUNT = 40960
+    g_nClientCount = 0
+
     def __init__(self, application, request, **kwargs):
         super().__init__(application, request, **kwargs)
 
     async def get_user_agent(self):
         return self.request.headers.get("User-Agent", "")
 
+    def max_client_reach(self):
+        BaseHandler.g_nClientCount += 1
+        return BaseHandler.g_nClientCount > BaseHandler.MAX_CLIENT_COUNT
+
     async def prepare(self):
         from pythinkutils.aio.common.aiolog import g_aio_logger
+
+        if self.max_client_reach():
+            self.write(obj2json(AjaxResult.error("Too many requests")))
+            await self.finish()
+            return
 
         '''
         ua_string = 'Mozilla/5.0 (iPhone; CPU iPhone OS 5_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9B179 Safari/7534.48.3'
@@ -59,6 +73,13 @@ class BaseHandler(tornado.web.RequestHandler):
             await g_aio_logger.error(e)
 
         await g_aio_logger.info("FROM %s %s %s" % (self.get_client_ip(), self.request.method, self.request.uri ))
+
+    def on_finish(self):
+        tornado.ioloop.IOLoop.current().add_callback(self.on_finish_async)
+
+    async def on_finish_async(self):
+        if BaseHandler.g_nClientCount > 0:
+            BaseHandler.g_nClientCount -= 1
 
     def get_client_ip(self):
         try:
