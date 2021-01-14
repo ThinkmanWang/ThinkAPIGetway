@@ -9,6 +9,7 @@ import tornado.httpserver
 import tornado.ioloop
 import tornado.options
 import tornado.web
+import user_agents
 
 from pythinkutils.common.StringUtils import *
 from pythinkutils.common.log import g_logger
@@ -18,8 +19,44 @@ class BaseHandler(tornado.web.RequestHandler):
     def __init__(self, application, request, **kwargs):
         super().__init__(application, request, **kwargs)
 
+    async def get_user_agent(self):
+        return self.request.headers.get("User-Agent", "")
+
     async def prepare(self):
         from pythinkutils.aio.common.aiolog import g_aio_logger
+
+        '''
+        ua_string = 'Mozilla/5.0 (iPhone; CPU iPhone OS 5_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9B179 Safari/7534.48.3'
+        user_agent = parse(ua_string)
+        
+        # Accessing user agent's browser attributes
+        user_agent.browser  # returns Browser(family=u'Mobile Safari', version=(5, 1), version_string='5.1')
+        user_agent.browser.family  # returns 'Mobile Safari'
+        user_agent.browser.version  # returns (5, 1)
+        user_agent.browser.version_string   # returns '5.1'
+        
+        # Accessing user agent's operating system properties
+        user_agent.os  # returns OperatingSystem(family=u'iOS', version=(5, 1), version_string='5.1')
+        user_agent.os.family  # returns 'iOS'
+        user_agent.os.version  # returns (5, 1)
+        user_agent.os.version_string  # returns '5.1'
+        
+        # Accessing user agent's device properties
+        user_agent.device  # returns Device(family=u'iPhone', brand=u'Apple', model=u'iPhone')
+        user_agent.device.family  # returns 'iPhone'
+        user_agent.device.brand # returns 'Apple'
+        user_agent.device.model # returns 'iPhone'
+        
+        # Viewing a pretty string version
+        str(user_agent) # returns "iPhone / iOS 5.1 / Mobile Safari 5.1"
+        '''
+        try:
+            szUA = await self.get_user_agent()
+
+            user_agent = user_agents.parse(szUA)
+            await g_aio_logger.info("%s %s %s" % (user_agent.device.family, user_agent.os.family, user_agent.browser.family ))
+        except Exception as e:
+            await g_aio_logger.error(e)
 
         await g_aio_logger.info("FROM %s %s %s" % (self.get_client_ip(), self.request.method, self.request.uri ))
 
