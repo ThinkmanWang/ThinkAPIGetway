@@ -48,6 +48,9 @@ class MainHandler(JWTHandler):
         if False == str(szPath).startswith("/"):
             szPath = "/" + szPath.strip()
 
+        if False == is_empty_string(self.request.query):
+            szPath = "{}?{}".format(szPath, self.request.query)
+
         nRet = await self.do_api_getway(szPath)
 
         if nRet == APIGetwayResult.SUCCESS:
@@ -143,6 +146,10 @@ class MainHandler(JWTHandler):
                 self.set_status(304)
                 await self.flush()
                 return APIGetwayResult.SUCCESS
+            else:
+                self.set_status(404)
+                await self.flush()
+                return APIGetwayResult.PROXY_FAILED
         except Exception as e:
             return APIGetwayResult.PROXY_FAILED
 
