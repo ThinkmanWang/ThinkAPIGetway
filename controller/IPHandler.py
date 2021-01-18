@@ -24,7 +24,7 @@ from pythinkutils.common.AjaxResult import AjaxResult
 class IPHandler(BaseHandler):
 
     async def post(self):
-        self.write(obj2json(AjaxResult.success({"ip": self.get_client_ip()})))
+        self.write(obj2json(AjaxResult.success({"ip": self.get_real_client_ip()})))
 
     async def get(self):
         await self.post()

@@ -72,7 +72,7 @@ class BaseHandler(tornado.web.RequestHandler):
         except Exception as e:
             await g_aio_logger.error(e)
 
-        await g_aio_logger.info("FROM %s %s %s" % (self.get_client_ip(), self.request.method, self.request.uri ))
+        await g_aio_logger.info("FROM %s %s %s" % (self.get_real_client_ip(), self.request.method, self.request.uri ))
 
     def on_finish(self):
         tornado.ioloop.IOLoop.current().add_callback(self.on_finish_async)
@@ -81,7 +81,7 @@ class BaseHandler(tornado.web.RequestHandler):
         if BaseHandler.g_nClientCount > 0:
             BaseHandler.g_nClientCount -= 1
 
-    def get_client_ip(self):
+    def get_real_client_ip(self):
         try:
             szIP = self.request.headers.get("X-Forwarded-For")
             if szIP is None or len(szIP) <= 0 or "unknown" == szIP:
@@ -102,7 +102,11 @@ class BaseHandler(tornado.web.RequestHandler):
             return szIP.split(",")[0]
 
         except Exception as e:
-            return ""
+            return self.request.remote_ip
+
+
+    def get_client_ip(self):
+        return self.request.remote_ip
 
     # async def get_uid(self):
     #     pass
