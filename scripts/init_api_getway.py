@@ -46,10 +46,28 @@ g_dictAPIGetway = {
             }
         ]
     }
+    # , "/gogs/": {
+    #     "proxy_pass": [
+    #         {
+    #             "host": "http://172.16.0.2:3000/"
+    #             , "weight": 1 #default 1
+    #         }
+    #     ]
+    # }
+    # , "/gogs": {
+    #     "proxy_pass": [
+    #         {
+    #             "host": "http://172.16.0.2:3000"
+    #             , "weight": 1 #default 1
+    #         }
+    #     ]
+    # }
 }
 
 def init_api_getway():
     r = redis.StrictRedis(connection_pool=ThinkRedis.get_conn_pool_ex())
+
+    r.delete("think_api_getway_v2")
 
     for szKey in g_dictAPIGetway.keys():
         r.hset("think_api_getway_v2", szKey, json.dumps(g_dictAPIGetway[szKey]))
