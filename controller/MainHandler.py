@@ -266,6 +266,8 @@ class MainHandler(JWTHandler):
         with await (await ThinkAioRedisPool.get_conn_pool_ex()) as conn:
             lstKey = await conn.execute('hkeys', cls.REDIS_KEY_API_GETWAY)
 
+            cls.g_dictAPIGetway = {}
+
             for szKey in lstKey:
                 szKey = szKey.decode("utf8")
 
