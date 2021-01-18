@@ -34,7 +34,7 @@ class AuthHandler(JWTHandler):
         dictToken = await self.create_token(self.get_argument("appid"), self.get_argument("secret"))
 
         if dictToken is None:
-            return obj2json(AjaxResult.error())
+            return AjaxResult.error()
 
         self.write(obj2json(dictToken))
 

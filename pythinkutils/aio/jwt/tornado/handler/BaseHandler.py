@@ -35,7 +35,7 @@ class BaseHandler(tornado.web.RequestHandler):
         from pythinkutils.aio.common.aiolog import g_aio_logger
 
         if self.max_client_reach():
-            self.write(obj2json(AjaxResult.error("Too many requests")))
+            self.write(AjaxResult.error("Too many requests"))
             await self.finish()
             return
 

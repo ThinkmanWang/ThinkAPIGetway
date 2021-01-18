@@ -56,13 +56,13 @@ class MainHandler(JWTHandler):
         if nRet == APIGetwayResult.SUCCESS:
             pass
         elif nRet == APIGetwayResult.UNKNOW_PATH:
-            self.write(obj2json(AjaxResult.error("Unknow path '{}' ".format(szPath))))
+            self.write(AjaxResult.error("Unknow path '{}' ".format(szPath)))
         elif nRet == APIGetwayResult.AUTH_INVALID:
-            self.write(obj2json(AjaxResult.error("Auth failed for '{}' ".format(szPath))))
+            self.write(AjaxResult.error("Auth failed for '{}' ".format(szPath)))
         elif nRet == APIGetwayResult.PROXY_FAILED:
-            self.write(obj2json(AjaxResult.error("Proxy failed for '{}' ".format(szPath))))
+            self.write(AjaxResult.error("Proxy failed for '{}' ".format(szPath)))
         else:
-            self.write(obj2json(AjaxResult.error("Unknow Error for '{}' ".format(szPath))))
+            self.write(AjaxResult.error("Unknow Error for '{}' ".format(szPath)))
 
 
     async def get(self, szPath):
