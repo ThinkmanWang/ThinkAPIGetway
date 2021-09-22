@@ -1,0 +1,9 @@
+version: '2'
+services:
+  thinkapigetway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ThinkAPIGetway
+    restart: always
+

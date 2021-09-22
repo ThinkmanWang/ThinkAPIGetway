@@ -34,6 +34,11 @@ aiocron = "*"
 pyyaml = "*"
 ua-parser = "*"
 user-agents = "*"
+pandas = "*"
+pysocks = "*"
+cryptography = "*"
+pyopenssl = "*"
+certifi = "*"
 
 [dev-packages]
 
