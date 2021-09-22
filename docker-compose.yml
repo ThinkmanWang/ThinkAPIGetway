@@ -1,4 +1,9 @@
 version: '2'
+
+networks:
+  think_network:
+    external: true
+
 services:
   thinkapigetway:
     build:
@@ -6,7 +11,7 @@ services:
       dockerfile: Dockerfile
     container_name: ThinkAPIGetway
     networks:
-    - think_network
+      - think_network
     ports:
     - "80:80"
 
