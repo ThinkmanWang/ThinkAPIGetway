@@ -16,16 +16,7 @@ from pythinkutils.common.object2json import *
 from pythinkutils.redis.ThinkRedis import ThinkRedis
 
 g_dictAPIGetway = {
-    "/": {
-        "auth": False
-        , "proxy_pass": [
-            {
-                "host": "http://172.16.0.2:8001/"
-                , "weight": 1 #default 1
-            }
-        ]
-    }
-    , "/ruoyi-api/": {
+    "/ruoyi-api/": {
         "auth": False
         , "proxy_pass": [
             {
@@ -38,14 +29,36 @@ g_dictAPIGetway = {
             }
         ]
     }
-    , "/prod-api/": {
-        "proxy_pass": [
-            {
-                "host": "http://172.16.0.2:8000/"
-                , "weight": 1 #default 1
-            }
-        ]
-    }
+    # "/": {
+    #     "auth": False
+    #     , "proxy_pass": [
+    #         {
+    #             "host": "http://172.16.0.2:8001/"
+    #             , "weight": 1 #default 1
+    #         }
+    #     ]
+    # }
+    # , "/ruoyi-api/": {
+    #     "auth": False
+    #     , "proxy_pass": [
+    #         {
+    #             "host": "http://172.16.0.2:8000/"
+    #             # , "weight": 1 #default 1
+    #         }
+    #         , {
+    #             "host": "http://172.16.0.2:8000/"
+    #             , "weight": 5 #default 1
+    #         }
+    #     ]
+    # }
+    # , "/prod-api/": {
+    #     "proxy_pass": [
+    #         {
+    #             "host": "http://172.16.0.2:8000/"
+    #             , "weight": 1 #default 1
+    #         }
+    #     ]
+    # }
     # , "/gogs/": {
     #     "proxy_pass": [
     #         {
