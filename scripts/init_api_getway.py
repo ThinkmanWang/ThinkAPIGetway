@@ -20,20 +20,29 @@ g_dictAPIGetway = {
         "auth": False
         , "proxy_pass": [
             {
-                "host": "http://172.16.0.2:8000/"
+                "host": "http://think-ruoyi:8080/"
                 # , "weight": 1 #default 1
             }
             , {
-                "host": "http://172.16.0.2:8000/"
+                "host": "http://think-ruoyi:8080/"
                 , "weight": 5 #default 1
             }
         ]
     }
-    # "/": {
+    , "/ruoyi": {
+        "auth": False
+        , "proxy_pass": [
+            {
+                "host": "http://think-ruoyi-ui/"
+                , "weight": 1 #default 1
+            }
+        ]
+    }
+    # , "/": {
     #     "auth": False
     #     , "proxy_pass": [
     #         {
-    #             "host": "http://172.16.0.2:8001/"
+    #             "host": "http://think-ruoyi-ui/"
     #             , "weight": 1 #default 1
     #         }
     #     ]
