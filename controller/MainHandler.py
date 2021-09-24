@@ -68,6 +68,12 @@ class MainHandler(JWTHandler):
     async def get(self, szPath):
         await self.post(szPath)
 
+    async def put(self, szPath):
+        await self.post(szPath)
+
+    async def delete(self, szPath):
+        await self.post(szPath)
+
     async def do_http_proxy_plus(self, szUrl):
         from pythinkutils.aio.common.aiolog import g_aio_logger
 
