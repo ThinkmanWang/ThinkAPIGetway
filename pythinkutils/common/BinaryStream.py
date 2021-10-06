@@ -4,11 +4,11 @@ from struct import *
 from io import BytesIO
 
 class BinaryStream:
-    def __init__(self, base_stream = None):
-        if base_stream is None:
+    def __init__(self, baseData = None):
+        if baseData is None:
             self.base_stream = BytesIO()
         else:
-            self.base_stream = base_stream
+            self.base_stream = BytesIO(baseData)
 
     def readByte(self):
         return self.base_stream.read(1)
@@ -50,8 +50,9 @@ class BinaryStream:
         return self.unpack(szByteOrder + 'd', 8)
 
     def readString(self):
-        length = self.readUChar()
-        return self.unpack(str(length) + 's', length)
+        length = self.readInt16()
+        byteData = self.unpack(str(length) + 's', length)
+        return byteData.decode("utf-8")
 
     def writeBytes(self, value):
         self.base_stream.write(value)
@@ -92,7 +93,7 @@ class BinaryStream:
     def writeString(self, value):
         length = len(value)
         self.writeUInt16(length)
-        self.pack(str(length) + 's', value)
+        self.pack(str(length) + 's', value.encode(encoding="utf-8"))
 
     def pack(self, fmt, data):
         return self.writeBytes(pack(fmt, data))

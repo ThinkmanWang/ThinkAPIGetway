@@ -15,7 +15,7 @@ aiomysql = "*"
 aiorwlock = "*"
 aioredis = "*"
 tornado = "*"
-aiofiles = "==0.4.0"
+aiofiles = "*"
 aiologger = "==0.4.0rc1"
 selenium = "*"
 aiokafka = "*"
@@ -44,4 +44,4 @@ websockets = "*"
 [dev-packages]
 
 [requires]
-python_version = "3.7"
+python_version = "3.9.6"

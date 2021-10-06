@@ -30,7 +30,7 @@ class AioRedisLock(object):
 
         nRet = 0
         for i in range(acquire_timeout):
-            nRet = await conn.execute("SETNX", cls.mk_key(lockname), szUuid)
+            nRet = await conn.setnx(cls.mk_key(lockname), szUuid)
             if nRet < 1:
                 await asyncio.sleep(1)
             else:
@@ -40,7 +40,7 @@ class AioRedisLock(object):
             return None
 
         try:
-            await conn.execute("EXPIRE", cls.mk_key(lockname), lock_timeout)
+            await conn.expire(cls.mk_key(lockname), lock_timeout)
         except Exception as e:
             pass
 
@@ -54,7 +54,7 @@ class AioRedisLock(object):
         szKey = cls.mk_key(lockname)
 
         try:
-            szVal = await conn.execute("GET", szKey)
+            szVal = await conn.get(szKey)
             if bytes == type(szVal):
                 szVal = szVal.decode(encoding='utf-8')
             if is_empty_string(szVal):
@@ -63,7 +63,7 @@ class AioRedisLock(object):
             if szVal != identifier:
                 return False
 
-            await conn.execute("DEL", szKey)
+            await conn.delete(szKey)
 
             return True
         except Exception as e:

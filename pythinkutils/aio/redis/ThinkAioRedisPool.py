@@ -39,22 +39,23 @@ class ThinkAioRedisPool(object):
 
             async with cls.g_rwlock.writer:
                 if cls.g_dictConnPool.get(szHostPortDb) is None:
-                    connPool = await cls.mk_conn_pool(host, password, port, db, max_connections)
+                    connPool = cls.mk_conn_pool(host, password, port, db, max_connections)
 
                     cls.g_dictConnPool[szHostPortDb] = connPool
 
         return cls.g_dictConnPool.get(szHostPortDb)
 
     @classmethod
-    async def mk_conn_pool(cls
+    def mk_conn_pool(cls
                      , host='127.0.0.1'
                      , password=None
                      , port=6379
                      , db=0
                      , max_connections=16):
 
-        szAddress = "redis://{}:{}".format(host, port)
-        _conn_pool = await aioredis.create_pool(szAddress, db=db, password=password, minsize=2, maxsize=max_connections)
+        szAddress = "redis://:{}@{}:{}".format(password, host, port)
+        _conn_pool = aioredis.ConnectionPool.from_url(szAddress, db = db)
+        _conn_pool.max_connections = max_connections
         return _conn_pool
 
 

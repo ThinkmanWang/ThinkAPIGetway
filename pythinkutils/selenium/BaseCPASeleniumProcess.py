@@ -4,6 +4,7 @@ import sys
 import os
 
 from multiprocessing import Process
+from threading import Thread
 import time
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
@@ -21,9 +22,9 @@ from pythinkutils.common.log import g_logger
 from pythinkutils.common.datetime_utils import *
 from pythinkutils.common.StringUtils import *
 
-class BaseCPASeleniumProcess(Process, AbstractEventListener):
+class BaseCPASeleniumProcess(Thread, AbstractEventListener):
     def __init__(self):
-        super(Process, self).__init__()
+        super(Thread, self).__init__()
         super(AbstractEventListener, self).__init__()
 
         self.m_eventDriver = None
@@ -86,3 +87,39 @@ class BaseCPASeleniumProcess(Process, AbstractEventListener):
         driver.set_page_load_timeout(60)
 
         self.m_eventDriver = EventFiringWebDriver(driver, self)
+
+    # def mk_chrome(self, bHeadless = True):
+    #     option = Options()
+    #
+    #     if bHeadless:
+    #         option.add_argument('headless')
+    #
+    #     option.add_argument('--no-sandbox')
+    #
+    #     option.add_argument("--start-maximized")
+    #     option.add_argument('--disable-gpu')
+    #     option.add_experimental_option('w3c', False)
+    #
+    #     szUA = self.on_get_ua()
+    #     if False == is_empty_string(szUA):
+    #         option.add_argument("user-agent={0}".format(szUA))
+    #
+    #     szProxy = self.on_get_proxy()
+    #     if False == is_empty_string(szProxy):
+    #         g_logger.info("--proxy-server={}".format(szProxy))
+    #         option.add_argument("--proxy-server={}".format(szProxy))
+    #     else:
+    #         pass
+    #
+    #     option.add_argument('--user-data-dir={}'.format(self.on_get_data_dir()))
+    #
+    #     driver = webdriver.Chrome(chrome_options=option)
+    #     driver.delete_all_cookies()
+    #     driver.maximize_window();
+    #     driver.set_window_size(1920, 1080)
+    #     driver.set_page_load_timeout(60)
+    #
+    #     self.m_eventDriver = driver
+    #     # self.m_WebDriver = driver
+    #
+    #     # self.m_eventDriver = EventFiringWebDriver(driver, self)

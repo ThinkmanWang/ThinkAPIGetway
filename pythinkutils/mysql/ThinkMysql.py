@@ -4,7 +4,7 @@ import sys
 import os
 import pymysql as mysql
 import threading
-from DBUtils.PooledDB import PooledDB
+from dbutils.pooled_db import PooledDB
 
 from pythinkutils.config.Config import ThinkConfig
 

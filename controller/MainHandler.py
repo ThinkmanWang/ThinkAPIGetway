@@ -22,6 +22,7 @@ import tornado.curl_httpclient
 import tornado.httpclient
 import tornado.httputil
 import re
+from aioredis import Redis
 
 from pythinkutils.common.log import g_logger
 from pythinkutils.aio.jwt.tornado.handler.BaseHandler import BaseHandler
@@ -266,24 +267,31 @@ class MainHandler(JWTHandler):
         from pythinkutils.aio.common.aiolog import g_aio_logger
         from pythinkutils.aio.redis.ThinkAioRedisPool import ThinkAioRedisPool
 
+        await g_aio_logger.info("Start Sync")
+
         def key_cmp(szKey):
             return len(szKey)
 
-        with await (await ThinkAioRedisPool.get_conn_pool_ex()) as conn:
-            lstKey = await conn.execute('hkeys', cls.REDIS_KEY_API_GETWAY)
+        r = Redis(connection_pool=await ThinkAioRedisPool.get_conn_pool_ex())
+        try:
+            lstKey = await r.hkeys(cls.REDIS_KEY_API_GETWAY)
 
             cls.g_dictAPIGetway = {}
 
             for szKey in lstKey:
                 szKey = szKey.decode("utf8")
 
-                szVal = await conn.execute('hget', cls.REDIS_KEY_API_GETWAY, szKey)
+                szVal = await r.hget(cls.REDIS_KEY_API_GETWAY, szKey)
                 szVal = szVal.decode("utf8")
 
                 if szVal is None:
                     continue
 
                 cls.g_dictAPIGetway[szKey] = json.loads(szVal)
+        except Exception as ex:
+            await g_aio_logger.error(ex)
+        finally:
+            await r.close()
 
         await g_aio_logger.info(obj2json(cls.g_dictAPIGetway))
 
