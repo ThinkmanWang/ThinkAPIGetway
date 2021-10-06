@@ -38,6 +38,15 @@ g_dictAPIGetway = {
             }
         ]
     }
+    , "/ruoyi/": {
+        "auth": False
+        , "proxy_pass": [
+            {
+                "host": "http://think-ruoyi-ui/"
+                , "weight": 1 #default 1
+            }
+        ]
+    }
     # , "/": {
     #     "auth": False
     #     , "proxy_pass": [
