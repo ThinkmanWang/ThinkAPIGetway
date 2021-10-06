@@ -39,6 +39,7 @@ pysocks = "*"
 cryptography = "*"
 pyopenssl = "*"
 certifi = "*"
+websockets = "*"
 
 [dev-packages]
 
