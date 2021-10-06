@@ -14,6 +14,7 @@ import json
 
 from asyncio_pool import AioPool
 from aioredis import Redis
+from tornado.websocket import websocket_connect
 
 from controller.MainHandler import MainHandler
 from pythinkutils.common.StringUtils import *
@@ -66,7 +67,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
                 await g_aio_logger.info("RESPONSE: %s" % (szRet, ))
                 await self.write_message(szRet)
             except Exception as ex:
-                pass
+                self.close()
 
 
     async def open(self, szPath):
@@ -84,12 +85,16 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         asyncio.ensure_future(self.do_response())
 
     async def on_close(self):
+        from pythinkutils.aio.common.aiolog import g_aio_logger
         self.m_bClosed = True
 
         try:
             await self.m_wsUpper.close()
         except Exception as ex:
             pass
+
+        await g_aio_logger.info("Connection Closed")
+
 
     async def on_message(self, message):
         from pythinkutils.aio.common.aiolog import g_aio_logger
@@ -101,7 +106,6 @@ class WSHandler(tornado.websocket.WebSocketHandler):
                 return
 
             await self.m_wsUpper.send(message)
-        except websockets.ConnectionClosed:
-            self.close()
         except Exception as ex:
             await g_aio_logger.error(ex)
+            self.close()
