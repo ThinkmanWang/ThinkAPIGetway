@@ -26,6 +26,7 @@ from pythinkutils.common.AjaxResult import AjaxResult
 from controller.MainHandler import MainHandler
 from controller.AuthHandler import AuthHandler
 from controller.IPHandler import IPHandler
+from controller.WSHandler import WSHandler
 
 # @aiocron.crontab("*/1 * * * *")
 async def sync_apigetway():
@@ -46,6 +47,7 @@ async def on_server_started():
 application = tornado.web.Application(handlers = [
     (r"/auth/(.*)", AuthHandler)
     , (r"/myip", IPHandler)
+    , (r"/ws/(.*)", WSHandler)
     , (r"/(.*)", MainHandler)
 ], cookie_secret="BUEa2ckrQtmBofim3aP6cwr/acg0LEu6mHUxq4O3EY0=", autoreload=False)
 
@@ -53,9 +55,9 @@ if __name__ == '__main__':
 
     http_server = HTTPServer(application)
 
-    http_server.bind(80)
-    http_server.start(0)
-    # http_server.listen(8080)
+    # http_server.bind(80)
+    # http_server.start(0)
+    http_server.listen(8080)
 
     g_logger.info('HTTP Server started... %d' % (os.getpid(),))
     asyncio.gather(on_server_started())
