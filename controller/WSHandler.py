@@ -62,6 +62,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             try:
                 szRet = await self.m_wsUpper.recv()
                 if is_empty_string(szRet):
+                    await g_aio_logger.info("FXXK")
                     continue
 
                 await g_aio_logger.info("RESPONSE: %s" % (szRet, ))
