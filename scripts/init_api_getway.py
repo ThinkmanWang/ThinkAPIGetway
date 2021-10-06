@@ -47,6 +47,15 @@ g_dictAPIGetway = {
             }
         ]
     }
+    , "/ws/game-ws-server": {
+        "auth": False
+        , "proxy_pass": [
+            {
+                "host": "ws://game_main_server_01:8082/game"
+                , "weight": 1 #default 1
+            }
+        ]
+    }
     # , "/": {
     #     "auth": False
     #     , "proxy_pass": [

@@ -40,6 +40,7 @@ cryptography = "*"
 pyopenssl = "*"
 certifi = "*"
 websockets = "*"
+asyncio-pool = "*"
 
 [dev-packages]
 

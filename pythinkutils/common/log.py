@@ -137,7 +137,7 @@ def setup_custom_logger():
     # formatter = logging.Formatter('%(asctime)s [%(pathname)s: %(lineno)d] %(levelname)s %(message)s')
 
     logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
 
     file_handler = ParallelTimedRotatingFileHandler(LOG_FILE, when='H')
     file_handler.setFormatter(formatter)
