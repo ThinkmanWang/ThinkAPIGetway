@@ -85,7 +85,10 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         self.m_wsUpper = await websockets.connect(szProxyUrl)
         asyncio.ensure_future(self.do_response())
 
-    async def on_close(self):
+    def on_close(self):
+        asyncio.ensure_future(self._on_close())
+
+    async def _on_close(self):
         from pythinkutils.aio.common.aiolog import g_aio_logger
         self.m_bClosed = True
 
