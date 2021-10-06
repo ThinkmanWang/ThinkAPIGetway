@@ -57,7 +57,7 @@ if __name__ == '__main__':
 
     # http_server.bind(80)
     # http_server.start(0)
-    http_server.listen(8080)
+    http_server.listen(80)
 
     g_logger.info('HTTP Server started... %d' % (os.getpid(),))
     asyncio.gather(on_server_started())
