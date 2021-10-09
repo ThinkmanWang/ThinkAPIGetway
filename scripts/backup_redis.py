@@ -58,6 +58,10 @@ def main():
             szKey = byteKey.decode("utf-8")
 
             byteVal = rSrc.dump(szKey)
+            if byteVal is None:
+                g_logger.info("Value for %s is null" % (szKey, ))
+                continue
+                
             nTTL = rSrc.ttl(szKey)
             if nTTL < 0:
                 nTTL = 0
