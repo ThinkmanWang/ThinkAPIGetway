@@ -18,7 +18,7 @@ g_nSrcDB = 0
 g_szDestIP = "127.0.0.1"
 g_nDestPort = 6379
 g_szDestPassword = "Ab123145"
-g_nDestDB = 3
+g_nDestDB = 4
 
 def main():
     global g_szSrcIP
