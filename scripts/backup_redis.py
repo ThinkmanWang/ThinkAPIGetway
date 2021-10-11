@@ -76,7 +76,7 @@ def main():
                 return
 
             g_logger.info("%d/%d [SUCCESS: %d] => %s" % (nPos, len(lstKeys), nSuccess, szKey))
-            
+
         g_logger.info("FINISHED: %d/%d [SUCCESS: %d]" % (nPos, len(lstKeys), nSuccess))
     except Exception as ex:
         g_logger.error(ex)
