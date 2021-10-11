@@ -61,7 +61,7 @@ def main():
             if byteVal is None:
                 g_logger.info("Value for %s is null" % (szKey, ))
                 continue
-                
+
             nTTL = rSrc.ttl(szKey)
             if nTTL < 0:
                 nTTL = 0
@@ -76,6 +76,8 @@ def main():
                 return
 
             g_logger.info("%d/%d [SUCCESS: %d] => %s" % (nPos, len(lstKeys), nSuccess, szKey))
+            
+        g_logger.info("FINISHED: %d/%d [SUCCESS: %d]" % (nPos, len(lstKeys), nSuccess))
     except Exception as ex:
         g_logger.error(ex)
         return
