@@ -14,7 +14,7 @@ g_szSrcIP = "218.2.204.215"
 g_nSrcPort = 6378
 g_szSrcPassword = ""
 
-g_szDestIP = "172.16.0.2"
+g_szDestIP = "127.0.0.1"
 g_nDestPort = 6379
 g_szDestPassword = "Ab123145"
 
