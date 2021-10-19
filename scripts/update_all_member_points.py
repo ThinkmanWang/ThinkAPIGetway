@@ -13,16 +13,17 @@ from pythinkutils.common.log import g_logger
 g_szSrcIP = "218.2.204.215"
 g_nSrcPort = 6378
 g_szSrcPassword = ""
-g_nSrcDB = 6
+g_nSrcDB = 2
 
 def main():
+    szHKey = "every_day_memintegral_2"
     rSrc = redis.Redis(host=g_szSrcIP, port=g_nSrcPort, password=g_szSrcPassword, db=g_nSrcDB)
-    lstKeys = rSrc.hkeys("every_day_memintegral_1")
+    lstKeys = rSrc.hkeys(szHKey)
     for byteKey in lstKeys:
         szKey = byteKey.decode("utf-8")
         g_logger.info(szKey)
 
-        # rSrc.hset("every_day_memintegral_1", szKey, 110000)
+        # rSrc.hset(szHKey, szKey, 100000)
 
 if __name__ == '__main__':
     main()
