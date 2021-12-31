@@ -10,13 +10,13 @@ import redis
 from pythinkutils.common.StringUtils import *
 from pythinkutils.common.log import g_logger
 
-g_szSrcIP = "6.0.170.16"
-g_nSrcPort = 6379
+g_szSrcIP = "218.2.204.215"
+g_nSrcPort = 6378
 g_szSrcPassword = ""
 
-g_szDestIP = "6.0.170.7"
+g_szDestIP = "r-bp142zcggisd2m9o30.redis.rds.aliyuncs.com"
 g_nDestPort = 6379
-g_szDestPassword = ""
+g_szDestPassword = "Ab123145"
 
 def main():
     global g_szSrcIP

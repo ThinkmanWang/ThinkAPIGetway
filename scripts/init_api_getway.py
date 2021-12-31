@@ -16,15 +16,15 @@ from pythinkutils.common.object2json import *
 from pythinkutils.redis.ThinkRedis import ThinkRedis
 
 g_dictAPIGetway = {
-    "/ruoyi-api/": {
+    "/think-ruoyi-api/": {
         "auth": False
         , "proxy_pass": [
             {
-                "host": "http://think-ruoyi:8080/"
+                "host": "http://think-ruoyi-api:8087/"
                 # , "weight": 1 #default 1
             }
             , {
-                "host": "http://think-ruoyi:8080/"
+                "host": "http://think-ruoyi-api:8087/"
                 , "weight": 5 #default 1
             }
         ]
