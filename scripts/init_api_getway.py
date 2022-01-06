@@ -56,6 +56,15 @@ g_dictAPIGetway = {
             }
         ]
     }
+    , "/yshop-api/": {
+        "auth": False
+        , "proxy_pass": [
+            {
+                "host": "http://yshop-api:8000/"
+                # , "weight": 1 #default 1
+            }
+        ]
+    }
     # , "/": {
     #     "auth": False
     #     , "proxy_pass": [
