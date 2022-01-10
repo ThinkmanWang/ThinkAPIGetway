@@ -17,7 +17,7 @@ class TokenUtils:
     @classmethod
     async def auth_token(cls, szAppId, szSecret):
         try:
-            szUrl = "{}{}".format(TokenUtils.g_szHost, "/ruoyi-api/auth/token")
+            szUrl = "{}{}".format(TokenUtils.g_szHost, "/auth/token")
             resp = await requests.post(szUrl, data={"appid": szAppId, "secret": szSecret})
 
             if 200 != resp.status:
@@ -36,7 +36,7 @@ class TokenUtils:
     @classmethod
     async def get_info(cls, szToken):
         try:
-            szUrl = "{}{}".format(TokenUtils.g_szHost, "/ruoyi-api/getInfo")
+            szUrl = "{}{}".format(TokenUtils.g_szHost, "/getInfo")
             dictHeader = {
                 "Authorization": "Bearer {}".format(szToken)
             }
