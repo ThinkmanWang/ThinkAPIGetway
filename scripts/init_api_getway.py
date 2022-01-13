@@ -106,52 +106,6 @@ g_dictAPIGetway = {
             }
         ]
     }
-    # , "/": {
-    #     "auth": False
-    #     , "proxy_pass": [
-    #         {
-    #             "host": "http://think-ruoyi-ui/"
-    #             , "weight": 1 #default 1
-    #         }
-    #     ]
-    # }
-    # , "/ruoyi-api/": {
-    #     "auth": False
-    #     , "proxy_pass": [
-    #         {
-    #             "host": "http://172.16.0.2:8000/"
-    #             # , "weight": 1 #default 1
-    #         }
-    #         , {
-    #             "host": "http://172.16.0.2:8000/"
-    #             , "weight": 5 #default 1
-    #         }
-    #     ]
-    # }
-    # , "/prod-api/": {
-    #     "proxy_pass": [
-    #         {
-    #             "host": "http://172.16.0.2:8000/"
-    #             , "weight": 1 #default 1
-    #         }
-    #     ]
-    # }
-    # , "/gogs/": {
-    #     "proxy_pass": [
-    #         {
-    #             "host": "http://172.16.0.2:3000/"
-    #             , "weight": 1 #default 1
-    #         }
-    #     ]
-    # }
-    # , "/gogs": {
-    #     "proxy_pass": [
-    #         {
-    #             "host": "http://172.16.0.2:3000"
-    #             , "weight": 1 #default 1
-    #         }
-    #     ]
-    # }
 }
 
 def init_api_getway():
