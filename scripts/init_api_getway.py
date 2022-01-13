@@ -65,6 +65,47 @@ g_dictAPIGetway = {
             }
         ]
     }
+    , "/thinkspringboot/": {
+        "auth": False
+        , "proxy_pass": [
+            {
+                "host": "http://thinkspringboot/"
+                # , "weight": 1 #default 1
+            }
+        ]
+    }
+
+    , "/ruoyicound": {
+        "auth": False
+        , "proxy_pass": [
+            {
+                "host": "http://ruoyicound-ui/"
+                , "weight": 1 #default 1
+            }
+        ]
+    }
+    , "/ruoyicound/": {
+        "auth": False
+        , "proxy_pass": [
+            {
+                "host": "http://ruoyicound-ui/"
+                , "weight": 1 #default 1
+            }
+        ]
+    }
+    , "/ruoyicound-gateway/": {
+        "auth": False
+        , "proxy_pass": [
+            {
+                "host": "http://ruoyicound-gateway:8088/"
+                # , "weight": 1 #default 1
+            }
+            , {
+                "host": "http://ruoyicound-gateway:8088/"
+                , "weight": 5 #default 1
+            }
+        ]
+    }
     # , "/": {
     #     "auth": False
     #     , "proxy_pass": [
