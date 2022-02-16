@@ -67,8 +67,10 @@ if __name__ == '__main__':
     uid = os.geteuid()
     if 0 == uid:
         http_server.bind(80)
+        g_logger.info("Bind on %d" % (80, ))
     else:
         http_server.bind(8080)
+        g_logger.info("Bind on %d" % (8080, ))
 
     http_server.start(0)
     # http_server.listen(80)
