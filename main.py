@@ -28,6 +28,15 @@ from controller.AuthHandler import AuthHandler
 from controller.IPHandler import IPHandler
 from controller.WSHandler import WSHandler
 
+# euid = os.geteuid()
+# if euid != 0:
+#     print("Script not started as root. Running sudo..")
+#     args = ['sudo', sys.executable] + sys.argv + [os.environ]
+#     # the next line replaces the currently-running process with the sudo
+#     os.execlpe('sudo', *args)
+#
+# print('Running. Your euid is', euid)
+
 # @aiocron.crontab("*/1 * * * *")
 async def sync_apigetway():
     await MainHandler.init_api_getway()
@@ -55,7 +64,12 @@ if __name__ == '__main__':
 
     http_server = HTTPServer(application)
 
-    http_server.bind(80)
+    uid = os.geteuid()
+    if 0 == uid:
+        http_server.bind(80)
+    else:
+        http_server.bind(8080)
+
     http_server.start(0)
     # http_server.listen(80)
 
