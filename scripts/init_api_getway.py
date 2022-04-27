@@ -16,96 +16,106 @@ from pythinkutils.common.object2json import *
 from pythinkutils.redis.ThinkRedis import ThinkRedis
 
 g_dictAPIGetway = {
-    "/think-ruoyi-api/": {
+    "/ruoyi-api/": {
         "auth": False
         , "proxy_pass": [
             {
-                "host": "http://think-ruoyi-api:8087/"
-                # , "weight": 1 #default 1
-            }
-            , {
-                "host": "http://think-ruoyi-api:8087/"
-                , "weight": 5 #default 1
-            }
-        ]
-    }
-    , "/ruoyi": {
-        "auth": False
-        , "proxy_pass": [
-            {
-                "host": "http://think-ruoyi-ui/"
-                , "weight": 1 #default 1
-            }
-        ]
-    }
-    , "/ruoyi/": {
-        "auth": False
-        , "proxy_pass": [
-            {
-                "host": "http://think-ruoyi-ui/"
-                , "weight": 1 #default 1
-            }
-        ]
-    }
-    , "/ws/game-ws-server": {
-        "auth": False
-        , "proxy_pass": [
-            {
-                "host": "ws://game_main_server_01:8082/game"
-                , "weight": 1 #default 1
-            }
-        ]
-    }
-    , "/yshop-api/": {
-        "auth": False
-        , "proxy_pass": [
-            {
-                "host": "http://yshop-api:8000/"
-                # , "weight": 1 #default 1
-            }
-        ]
-    }
-    , "/thinkspringboot/": {
-        "auth": False
-        , "proxy_pass": [
-            {
-                "host": "http://thinkspringboot/"
+                "host": "http://10.0.0.19:30749/"
                 # , "weight": 1 #default 1
             }
         ]
     }
 
-    , "/ruoyicound": {
-        "auth": False
-        , "proxy_pass": [
-            {
-                "host": "http://ruoyicound-ui/"
-                , "weight": 1 #default 1
-            }
-        ]
-    }
-    , "/ruoyicound/": {
-        "auth": False
-        , "proxy_pass": [
-            {
-                "host": "http://ruoyicound-ui/"
-                , "weight": 1 #default 1
-            }
-        ]
-    }
-    , "/ruoyicound-gateway/": {
-        "auth": False
-        , "proxy_pass": [
-            {
-                "host": "http://ruoyicound-gateway:8088/"
-                # , "weight": 1 #default 1
-            }
-            , {
-                "host": "http://ruoyicound-gateway:8088/"
-                , "weight": 5 #default 1
-            }
-        ]
-    }
+    # "/think-ruoyi-api/": {
+    #     "auth": False
+    #     , "proxy_pass": [
+    #         {
+    #             "host": "http://think-ruoyi-api:8087/"
+    #             # , "weight": 1 #default 1
+    #         }
+    #         , {
+    #             "host": "http://think-ruoyi-api:8087/"
+    #             , "weight": 5 #default 1
+    #         }
+    #     ]
+    # }
+    # , "/ruoyi": {
+    #     "auth": False
+    #     , "proxy_pass": [
+    #         {
+    #             "host": "http://think-ruoyi-ui/"
+    #             , "weight": 1 #default 1
+    #         }
+    #     ]
+    # }
+    # , "/ruoyi/": {
+    #     "auth": False
+    #     , "proxy_pass": [
+    #         {
+    #             "host": "http://think-ruoyi-ui/"
+    #             , "weight": 1 #default 1
+    #         }
+    #     ]
+    # }
+    # , "/ws/game-ws-server": {
+    #     "auth": False
+    #     , "proxy_pass": [
+    #         {
+    #             "host": "ws://game_main_server_01:8082/game"
+    #             , "weight": 1 #default 1
+    #         }
+    #     ]
+    # }
+    # , "/yshop-api/": {
+    #     "auth": False
+    #     , "proxy_pass": [
+    #         {
+    #             "host": "http://yshop-api:8000/"
+    #             # , "weight": 1 #default 1
+    #         }
+    #     ]
+    # }
+    # , "/thinkspringboot/": {
+    #     "auth": False
+    #     , "proxy_pass": [
+    #         {
+    #             "host": "http://thinkspringboot/"
+    #             # , "weight": 1 #default 1
+    #         }
+    #     ]
+    # }
+    #
+    # , "/ruoyicound": {
+    #     "auth": False
+    #     , "proxy_pass": [
+    #         {
+    #             "host": "http://ruoyicound-ui/"
+    #             , "weight": 1 #default 1
+    #         }
+    #     ]
+    # }
+    # , "/ruoyicound/": {
+    #     "auth": False
+    #     , "proxy_pass": [
+    #         {
+    #             "host": "http://ruoyicound-ui/"
+    #             , "weight": 1 #default 1
+    #         }
+    #     ]
+    # }
+    # , "/ruoyicound-gateway/": {
+    #     "auth": False
+    #     , "proxy_pass": [
+    #         {
+    #             "host": "http://ruoyicound-gateway:8088/"
+    #             # , "weight": 1 #default 1
+    #         }
+    #         , {
+    #             "host": "http://ruoyicound-gateway:8088/"
+    #             , "weight": 5 #default 1
+    #         }
+    #     ]
+    # }
 }
 
 def init_api_getway():
