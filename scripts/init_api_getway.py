@@ -20,7 +20,17 @@ g_dictAPIGetway = {
         "auth": False
         , "proxy_pass": [
             {
-                "host": "http://10.0.0.19:30749/"
+                "host": "http://10.0.0.19:32080/"
+                # , "weight": 1 #default 1
+            }
+        ]
+    }
+
+    , "/jgsz/": {
+        "auth": False
+        , "proxy_pass": [
+            {
+                "host": "http://10.0.0.23:8080/"
                 # , "weight": 1 #default 1
             }
         ]
