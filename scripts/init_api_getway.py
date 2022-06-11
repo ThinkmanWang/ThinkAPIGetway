@@ -20,7 +20,7 @@ g_dictAPIGetway = {
         "auth": False
         , "proxy_pass": [
             {
-                "host": "http://10.0.0.19:32080/"
+                "host": "http://10.0.0.26:30781/"
                 # , "weight": 1 #default 1
             }
         ]
